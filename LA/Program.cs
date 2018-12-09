@@ -14,13 +14,14 @@ namespace LA
             Console.WriteLine("Lexer Analizer\n");
             
             string textFile = File.ReadAllText(@"D:\Test.txt");
-
+            textFile = textFile.Replace("\r", "");
             LexerAnalizer lexerAnalizer = new LexerAnalizer(textFile);
             lexerAnalizer.ShowKeyWords();
             lexerAnalizer.AnalizerText();
             lexerAnalizer.ShowSuccessResult();
+            lexerAnalizer.ShowErrorResult();
 
-            Console.WriteLine("\nWas been analized");
+            
             Console.ReadLine();
         }
     }
