@@ -18,9 +18,6 @@ namespace LA
             this.position = posCnt;
         }
 
-        //public ErrorResult()
-        //{
-        //    text = "UNCLOSED COMMENT";
-        //}
+   
     }
 }

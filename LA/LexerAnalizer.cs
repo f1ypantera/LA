@@ -106,14 +106,14 @@ namespace LA
 
                 if (text[i + 1] != '*' && text[i + 1] != '$')
                 {
-                    SuccessOutput.Add(new SuccessResult(text[i].ToString(), "DIVIDERS", DIVIDERS[text[i].ToString()], lineCnt, posCnt));
+                    SuccessOutput.Add(new SuccessResult(text[i].ToString(), "DIVIDER", DIVIDERS[text[i].ToString()], lineCnt, posCnt));
                     return i;
                 }
                 else
                 {
                     if (text[i + 1] == '$')
                     {
-                        SuccessOutput.Add(new SuccessResult(text.Substring(i, 2), "DIVIDERS", DIVIDERS[text.Substring(i, 2)], lineCnt, posCnt));
+                        SuccessOutput.Add(new SuccessResult(text.Substring(i, 2), "DIVIDER", DIVIDERS[text.Substring(i, 2)], lineCnt, posCnt));
                         return i + 1;
                     }
                     int startLine = lineCnt;
@@ -145,7 +145,7 @@ namespace LA
             }
             else if (text[i] == '$' && i + 1 < text.Length - 1 && text[i + 1] == ')')
             {
-                SuccessOutput.Add(new SuccessResult(text.Substring(i, 2), "DIVIDERS", DIVIDERS[text.Substring(i, 2)], lineCnt, posCnt));
+                SuccessOutput.Add(new SuccessResult(text.Substring(i, 2), "DIVIDER", DIVIDERS[text.Substring(i, 2)], lineCnt, posCnt));
                 return i + 1;
             }
             return -1;
@@ -284,10 +284,11 @@ namespace LA
         {
             if (SuccessOutput != null)
             {
-                Console.WriteLine("code\tvalue\t    category\tlineNumber\tposition");
+                Console.WriteLine("{0}\t{1,8}\t{2,10}\t{3}\t{4}", "code", "value","category","line", "position");
                 foreach (SuccessResult res in SuccessOutput)
                 {
-                    Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", res.code, res.text, res.category, res.line, res.position);
+                    Console.WriteLine("{0}\t{1,8}\t{2,10}\t{3,2}\t{4,4}", res.code, res.text, res.category, res.line, res.position);
+                   
                 }
             }
             else
