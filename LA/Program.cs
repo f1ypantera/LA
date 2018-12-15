@@ -13,7 +13,7 @@ namespace LA
         {
             Console.WriteLine("Lexer Analizer\n");
             
-            string textFile = File.ReadAllText(@"D:\Test.txt");
+            string textFile = File.ReadAllText(@"D:\GitHubProjects\Test.txt");
             textFile = textFile.Replace("\r", "");
             LexerAnalizer lexerAnalizer = new LexerAnalizer(textFile);
             lexerAnalizer.ShowKeyWords();

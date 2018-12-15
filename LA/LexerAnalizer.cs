@@ -21,7 +21,8 @@ namespace LA
             {"(" , 42},
             {")" , 43},
             {"($", 44 },
-            {"$)", 45 }
+            {"$)", 45 },
+             {"+", 46 }
         };
 
         private Dictionary<string, int> KEYWORDS = new Dictionary<string, int>
@@ -29,7 +30,8 @@ namespace LA
             {"PROCEDURE", 401},
             {"BEGIN", 402},
             {"END", 403},
-            {"RETURN", 404}
+            {"RETURN", 404},
+            {"PHONE", 405}
 
         };
         public LexerAnalizer(string text)
@@ -47,7 +49,7 @@ namespace LA
 
             for (int i = 0; i < text.Length; i++)
             {
-                
+
                 if (text[i] == '\n')
                 {
                     lineCnt++;
@@ -57,60 +59,78 @@ namespace LA
                 {
                     posCnt = 1;
                 }
+
+              
                 int tmp = checkDividers(i);
-                if (tmp >= 0)
-                {
-                    i = tmp;
-                }
-                else if (tmp == -2)
-                {
-                    return;
-                }
-                if (i != tmp)
-                {
-                    
-                    tmp = checkDigits(i);
                     if (tmp >= 0)
                     {
                         i = tmp;
                     }
-
+                    else if (tmp == -2)
+                    {
+                        return;
+                    }
                     if (i != tmp)
                     {
-                       
-                        tmp = checkChars(i);
+
+                        tmp = checkDigits(i);
                         if (tmp >= 0)
                         {
                             i = tmp;
                         }
 
-                        if (i != tmp && text[i] != ' ' && text[i] != '\n')
+                        if (i != tmp)
                         {
-                            ErrorOutput.Add(new ErrorResult("UNEXPECTED SYMBOL " + text[i].ToString(), lineCnt, posCnt));
-                        }
 
+                            tmp = checkChars(i);
+                            if (tmp >= 0)
+                            {
+                                i = tmp;
+                            }
+
+                            if (i != tmp && text[i] != ' ' && text[i] != '\n')
+                            {
+                                ErrorOutput.Add(new ErrorResult("UNEXPECTED SYMBOL " + text[i].ToString(), lineCnt, posCnt));
+                            }
+
+                        }
                     }
+
+
+                    posCnt++;
                 }
 
-
-                posCnt++;
             }
+        
 
 
-
-        }
 
         public int checkDividers(int i)
         {
-            if (DIVIDERS.ContainsKey(text[i].ToString())) {
+
+
+
+            if (DIVIDERS.ContainsKey(text[i].ToString()))
+            {
 
                 if (text[i + 1] != '*' && text[i + 1] != '$')
                 {
-                    SuccessOutput.Add(new SuccessResult(text[i].ToString(), "DIVIDER", DIVIDERS[text[i].ToString()], lineCnt, posCnt));
-                    return i;
+
+                    if (text[i].ToString() == "+" && text[i + 1].ToString() == "(" && text[i + 5].ToString() == ")" )
+                    {
+                        SuccessOutput.Add(new SuccessResult(text.Substring(i, 13), "PHONE NUMBER", 405, lineCnt, posCnt));
+                        return i + 13;
+                    }
+                    else
+                    {
+                        SuccessOutput.Add(new SuccessResult(text[i].ToString(), "DIVIDER", DIVIDERS[text[i].ToString()], lineCnt, posCnt));
+                        return i;
+                    }
+
                 }
                 else
                 {
+
                     if (text[i + 1] == '$')
                     {
                         SuccessOutput.Add(new SuccessResult(text.Substring(i, 2), "DIVIDER", DIVIDERS[text.Substring(i, 2)], lineCnt, posCnt));
@@ -134,7 +154,7 @@ namespace LA
                         else if (j + 1 >= text.Length)
                         {
                             ErrorOutput.Add(new ErrorResult("UNCLOSED COMMENT", startLine, startPos));
-                            return j+1;
+                            return j + 1;
                         }
                         else
                         {
@@ -284,11 +304,11 @@ namespace LA
         {
             if (SuccessOutput != null)
             {
-                Console.WriteLine("{0}\t{1,8}\t{2,10}\t{3}\t{4}", "code", "value","category","line", "position");
+                Console.WriteLine("{0}\t{1,8}\t{2,10}\t{3}\t{4}", "code", "value", "category", "line", "position");
                 foreach (SuccessResult res in SuccessOutput)
                 {
                     Console.WriteLine("{0}\t{1,8}\t{2,10}\t{3,2}\t{4,4}", res.code, res.text, res.category, res.line, res.position);
-                   
+
                 }
             }
             else
@@ -308,9 +328,9 @@ namespace LA
                 Console.Write("\n\n------------LIST OF ERRORS------------\n");
                 foreach (ErrorResult err in ErrorOutput)
                 {
-                    Console.BackgroundColor = ConsoleColor.White; 
+                    Console.BackgroundColor = ConsoleColor.White;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error("+ err.line + "," + err.position + "):"+ err.text);
+                    Console.WriteLine("Error(" + err.line + "," + err.position + "):" + err.text);
                 }
 
 
